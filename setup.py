@@ -1,26 +1,40 @@
+import re
+
 from setuptools import setup
 
-import re
-import sys
-
-
-# extract html5validator version from __init__.py
 with open("w3c_validator/__init__.py", "r") as f:
-    INIT = f.read()
-    VERSION = next(re.finditer("__version__ = \"(.*?)\"", INIT)).group(1)
+    VERSION = next(re.finditer("__version__ = \"(.*?)\"", f.read())).group(1)
 
 setup(
-    name="W3C Validator",
+    name="Online-W3C-Validator",
+    author="Radomirs Cirskis",
+    author_email="nad2000@gmail.com",
     version=VERSION,
-    packages=["w3c_validator", ],
+    url="https://github.com/nad2000/W3C-Validator",
+    project_urls={
+        "Source Code": "https://github.com/nad2000/W3C-Validator",
+    },
+    packages=[
+        "w3c_validator",
+    ],
     license="MIT",
     long_description=open("README.md").read(),
-    install_requires=["requests", ],
+    install_requires=[
+        "requests",
+    ],
     entry_poins={
         "console_scripts": [
             "w3c_validator = w3c_validator.validator:main",
         ]
     },
+    keywords=[
+        'html validator',
+        'html',
+        'validator',
+        'checker',
+        'html5',
+        'w3',
+    ],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -32,5 +46,4 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
-    ]
-)
+    ])

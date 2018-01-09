@@ -12,11 +12,11 @@ import time
 
 import requests
 
-from . import __version__
+from w3c_validator import __version__
 
 LOGGER = logging.getLogger(__name__)
 
-HTML_VALIDATOR_URL = "http://validator.w3.org/nu"
+HTML_VALIDATOR_URL = "http://validator.w3.org/nu/?out=json"
 CSS_VALIDATOR_URL = "http://jigsaw.w3.org/css-validator/validator"
 
 
@@ -29,6 +29,7 @@ def validate(filename, verbose=False):
     Raise OSError if curl command returns an error status.
     """
     # is_css = filename.endswith(".css")
+
     is_remote = filename.startswith("http://") or filename.startswith(
         "https://")
     with tempfile.TemporaryFile(delete=False) if is_remote else open(
@@ -53,7 +54,7 @@ def validate(filename, verbose=False):
                 "showsource": "yes",
             })
 
-    return r.json().get("messages")
+    return r.json()
 
 
 def main():
@@ -61,7 +62,6 @@ def main():
     parser = argparse.ArgumentParser(
         description="[v" + __version__ + "] " + __doc__,
         prog="w3c_validator",
-        # help="usage: %(prog)s [--verbose] FILE|URL..."
     )
     parser.add_argument(
         "--log",
@@ -71,7 +71,9 @@ def main():
     parser.add_argument(
         "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument(
-        "source", metavar="N", type=str, nargs="+", help="file or URL")
+        "--verbose", help="increase output verbosity", action="store_true")
+    parser.add_argument(
+        "source", metavar="F", type=str, nargs="+", help="file or URL")
     args = parser.parse_args()
 
     logging.basicConfig(level=getattr(logging, args.log))
@@ -96,6 +98,8 @@ def main():
             LOGGER.info("failed: %s" % f)
             errors += 1
             continue
+
+        import pdb; pdb.set_trace()
         if f.endswith(".css"):
             errorcount = result["cssvalidation"]["result"]["errorcount"]
             warningcount = result["cssvalidation"]["result"]["warningcount"]
@@ -108,8 +112,7 @@ def main():
         else:
             for msg in result["messages"]:
                 if "lastLine" in msg:
-                    LOGGER.info("%(type)s: line %(lastLine)d: %(message)s",
-                                msg)
+                    LOGGER.info("%(type)s: line %(lastLine)d: %(message)s" % msg)
                 else:
                     LOGGER.info("%(type)s: %(message)s" % msg)
                 if msg["type"] == "error":
