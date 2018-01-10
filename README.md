@@ -1,4 +1,4 @@
-# W3C-Validator
+# Online W3C Validator
 
 Pure Python command line for HTML validation using W3C online validator. It could be very handy for using it in a CI pipline.
 
@@ -19,6 +19,17 @@ w3c_validator http://www.google.com some_file.html
 Example output:
 
 ```
+INFO:w3c_validator.validator:Files to validate: 
+  http://www.google.com
+INFO:w3c_validator.validator:Number of files: 1
+INFO:w3c_validator.validator:validating: http://www.google.com ...
+error: line 2: CSS: “display”: “inline-box” is not a “display” value in “inline-box” in “.ds”.
+error: line 2: The “bgcolor” attribute on the “body” element is obsolete. Use CSS instead.
+error: line 5: Element “nobr” not allowed as child of element “div” in this context. (Suppressing further errors from this subtree.)
+error: line 5: Attribute “width” not allowed on element “div” at this point.
+error: line 5: Element “nobr” not allowed as child of element “div” in this context. (Suppressing further errors from this subtree.)
+error: line 5: The “center” element is obsolete. Use CSS instead.
+error: line 5: The “clear” attribute on the “br” element is obsolete. Use CSS instead.
 ```
 
 Or you can use the fuction **validdate** provied by the package, that thakes either HTML file name or URL as a single parameter an returns JSON object with the validation output.
