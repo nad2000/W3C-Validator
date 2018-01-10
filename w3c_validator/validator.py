@@ -20,6 +20,14 @@ HTML_VALIDATOR_URL = "http://validator.w3.org/nu/?out=json"
 CSS_VALIDATOR_URL = "http://jigsaw.w3.org/css-validator/validator"
 
 
+def print_msg(msg):
+    """Print validation result message."""
+    if "lastLine" in msg:
+        print("%(type)s: line %(lastLine)d: %(message)s" % msg)
+    else:
+        print("%(type)s: %(message)s" % msg)
+
+
 def validate(filename, verbose=False):
     """
     Validate file and return JSON result as dictionary.
@@ -32,12 +40,12 @@ def validate(filename, verbose=False):
 
     is_remote = filename.startswith("http://") or filename.startswith(
         "https://")
-    with tempfile.TemporaryFile(delete=False) if is_remote else open(
+    with tempfile.TemporaryFile() if is_remote else open(
             filename, "rb") as f:
 
         if is_remote:
-            r = requests.get(filename, stream=True)
-            shutil.copyfileobject(r.raw, f)
+            r = requests.get(filename)
+            f.write(r.content)
             f.seek(0)
 
         # if is_css:
@@ -99,7 +107,7 @@ def main():
             errors += 1
             continue
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         if f.endswith(".css"):
             errorcount = result["cssvalidation"]["result"]["errorcount"]
             warningcount = result["cssvalidation"]["result"]["warningcount"]
@@ -111,10 +119,7 @@ def main():
                 LOGGER.info("warnings: %d" % warningcount)
         else:
             for msg in result["messages"]:
-                if "lastLine" in msg:
-                    LOGGER.info("%(type)s: line %(lastLine)d: %(message)s" % msg)
-                else:
-                    LOGGER.info("%(type)s: %(message)s" % msg)
+                print_msg(msg)
                 if msg["type"] == "error":
                     errors += 1
                 else:

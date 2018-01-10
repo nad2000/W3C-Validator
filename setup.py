@@ -3,7 +3,7 @@ import re
 from setuptools import setup
 
 with open("w3c_validator/__init__.py", "r") as f:
-    VERSION = next(re.finditer("__version__ = \"(.*?)\"", f.read())).group(1)
+    VERSION = next(re.finditer("__version__ = \"(.*?)\"", f.read())).group(1).strip()
 
 setup(
     name="Online-W3C-Validator",
@@ -22,9 +22,9 @@ setup(
     install_requires=[
         "requests",
     ],
-    entry_poins={
+    entry_points={
         "console_scripts": [
-            "w3c_validator = w3c_validator.validator:main",
+            "w3c_validator=w3c_validator.validator:main",
         ]
     },
     keywords=[
