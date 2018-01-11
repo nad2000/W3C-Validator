@@ -44,7 +44,7 @@ def validate(filename, verbose=False):
             filename, "rb") as f:
 
         if is_remote:
-            r = requests.get(filename)
+            r = requests.get(filename, verify=True)
             f.write(r.content)
             f.seek(0)
 
