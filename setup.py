@@ -1,6 +1,7 @@
 import re
 
 from setuptools import setup
+from io import open
 
 with open("w3c_validator/__init__.py", "r") as f:
     VERSION = next(re.finditer("__version__ = \"(.*?)\"", f.read())).group(1).strip()
@@ -18,7 +19,7 @@ setup(
         "w3c_validator",
     ],
     license="MIT",
-    long_description=open("README.md").read(),
+    long_description=open("README.md", encoding='utf8').read(),
     install_requires=[
         "requests",
     ],
