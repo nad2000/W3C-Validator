@@ -1,15 +1,13 @@
 """Validate HTML5 files."""
 
-# __all__ = (
-#     '__version__',
-#     'version_info'
-# )
+import pkg_resources
 
-# from pbr.version import VersionInfo
+__all__ = (
+    '__version__',
+)
 
-# _v = VersionInfo('mock').semantic_version()
-# __version__ = _v.release_string()
-# version_info = _v.version_tuple()
+dist = pkg_resources.get_distribution("Online-W3C-Validator")
+__version__ = dist.version
 
 # flake8: noqa
 from .validator import *
