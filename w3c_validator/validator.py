@@ -12,7 +12,7 @@ import time
 
 import requests
 
-from w3c_validator import __version__
+# from w3c_validator import __version__
 
 LOGGER = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def validate(filename, verbose=False):
 def main():
     """Parser the command line and run the validator."""
     parser = argparse.ArgumentParser(
-        description="[v" + __version__ + "] " + __doc__,
+        # description="[v" + __version__ + "] " + __doc__,
         prog="w3c_validator",
     )
     parser.add_argument(
@@ -77,8 +77,8 @@ def main():
         default="INFO",
         help=("log level: DEBUG, INFO or INFO "
               "(default: INFO)"))
-    parser.add_argument(
-        "--version", action="version", version="%(prog)s " + __version__)
+    # parser.add_argument(
+    #     "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument(
         "--verbose", help="increase output verbosity", action="store_true")
     parser.add_argument(
