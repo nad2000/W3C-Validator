@@ -60,7 +60,8 @@ def validate(filename, verbose=False):
             data={
                 "out": "json",
                 "showsource": "yes",
-            })
+            },
+            verify=False)
 
     return r.json()
 
