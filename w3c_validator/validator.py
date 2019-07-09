@@ -5,10 +5,10 @@ from __future__ import print_function
 
 import argparse
 import logging
-import shutil
 import sys
 import tempfile
 import time
+import urllib3
 
 import requests
 
@@ -129,4 +129,5 @@ def main():
 
 
 if __name__ == "__main__":
+    urllib3.disable_warnings()
     main()
