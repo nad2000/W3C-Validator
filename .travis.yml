@@ -1,8 +1,4 @@
 language: python
-env:
-    - ENV=dev PGPORT=54321 GID=$(id -g) DOMAIN=build.orcidhub.org.nz PROD_BRANCH=prod UAT_BRANCH=prod DATABASE_URL=postgresql://orcidhub@db/orcidhub?options='-c statement_timeout=3000'
-
-language: python
 python:
   - "2.7"
   - "3.3"
