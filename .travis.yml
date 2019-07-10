@@ -1,7 +1,5 @@
 language: python
 python:
-  - "2.7"
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
@@ -11,15 +9,9 @@ python:
   - "nightly"  # nightly build
 # command to install dependencies
 install:
-  - pip install .
-# command to run tests
-#script:
-#  - pytest
-#  - |
-#      if [[ $TRAVIS_COMMIT_MESSAGE == *"[PUBLISH]"* ]] ; then
-#          docker-compose exec app python3.6 ./setup.py sdist
-#          docker-compose exec app twine upload -u "$PYPI_USER" -p "$PYPI_PASSWORD" --skip-existing dist/*
-#      fi
+  - pip install '.[dev]'
+script:
+  - pytest
 deploy:
   provider: pypi
   user: "$PYPI_USER"

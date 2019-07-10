@@ -6,9 +6,10 @@ from __future__ import print_function
 import argparse
 import logging
 import sys
-import tempfile
 import time
 import urllib3
+from io import BytesIO
+
 
 import requests
 
@@ -40,13 +41,8 @@ def validate(filename, verbose=False):
 
     is_remote = filename.startswith("http://") or filename.startswith(
         "https://")
-    with tempfile.TemporaryFile() if is_remote else open(
+    with BytesIO(requests.get(filename, verify=False).content) if is_remote else open(
             filename, "rb") as f:
-
-        if is_remote:
-            r = requests.get(filename, verify=False)
-            f.write(r.content)
-            f.seek(0)
 
         # if is_css:
         #     cmd = (
@@ -54,7 +50,7 @@ def validate(filename, verbose=False):
         #         % (quoted_filename, CSS_VALIDATOR_URL))
         #     _ = cmd
         # else:
-        r = requests.post(
+        resp = requests.post(
             HTML_VALIDATOR_URL,
             files={"file": (filename, f, "text/html")},
             data={
@@ -63,11 +59,12 @@ def validate(filename, verbose=False):
             },
             verify=False)
 
-    return r.json()
+    return resp.json()
 
 
 def main():
     """Parser the command line and run the validator."""
+    urllib3.disable_warnings()
     parser = argparse.ArgumentParser(
         description="[v" + __version__ + "] " + __doc__,
         prog="w3c_validator",
@@ -129,5 +126,4 @@ def main():
 
 
 if __name__ == "__main__":
-    urllib3.disable_warnings()
     main()
