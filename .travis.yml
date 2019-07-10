@@ -1,0 +1,32 @@
+language: python
+env:
+    - ENV=dev PGPORT=54321 GID=$(id -g) DOMAIN=build.orcidhub.org.nz PROD_BRANCH=prod UAT_BRANCH=prod DATABASE_URL=postgresql://orcidhub@db/orcidhub?options='-c statement_timeout=3000'
+
+language: python
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.7-dev"  # 3.7 development branch
+  - "3.8-dev"  # 3.8 development branch
+  - "nightly"  # nightly build
+# command to install dependencies
+install:
+  - pip install .
+# command to run tests
+#script:
+#  - pytest
+#  - |
+#      if [[ $TRAVIS_COMMIT_MESSAGE == *"[PUBLISH]"* ]] ; then
+#          docker-compose exec app python3.6 ./setup.py sdist
+#          docker-compose exec app twine upload -u "$PYPI_USER" -p "$PYPI_PASSWORD" --skip-existing dist/*
+#      fi
+deploy:
+  provider: pypi
+  user: "$PYPI_USER"
+  password: "$PYPI_PASSWORD"
+  on:
+    tags: true
