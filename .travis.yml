@@ -13,8 +13,10 @@ script:
   - pytest
 
 after_success:
-  - python ./setup.py sdist
-  - twine upload -u "$PYPI_USER" -p "$PYPI_PASSWORD" --skip-existing dist/*
+  - if [[ "$(python -V)" == "Python 3.8"* ]] ; then
+      python ./setup.py sdist
+      twine upload -u "$PYPI_USER" -p "$PYPI_PASSWORD" --skip-existing dist/*
+    fi
 
 # deploy:
 #   provider: pypi
