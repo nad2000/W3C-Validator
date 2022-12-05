@@ -81,7 +81,6 @@ def validate(filename, verbose=False):
             # },
             verify=False,
         )
-        breakpoint()
 
     return resp.json()
 
