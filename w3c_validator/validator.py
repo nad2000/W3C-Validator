@@ -10,14 +10,23 @@ import time
 import urllib3
 from io import BytesIO
 
-
 import requests
-
 from w3c_validator import __version__
 
+from requests.packages.urllib3.filepost import encode_multipart_formdata
+
+requests.packages.urllib3.disable_warnings(
+    requests.packages.urllib3.exceptions.InsecureRequestWarning
+)
+urllib3.disable_warnings()
+requests.urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()
+
+
+logging.captureWarnings(True)
 LOGGER = logging.getLogger(__name__)
 
-HTML_VALIDATOR_URL = "http://validator.w3.org/nu/?out=json"
+HTML_VALIDATOR_URL = "https://validator.w3.org/nu/"
 CSS_VALIDATOR_URL = "http://jigsaw.w3.org/css-validator/validator"
 
 
@@ -39,10 +48,10 @@ def validate(filename, verbose=False):
     """
     # is_css = filename.endswith(".css")
 
-    is_remote = filename.startswith("http://") or filename.startswith(
-        "https://")
+    is_remote = filename.startswith("http://") or filename.startswith("https://")
     with BytesIO(requests.get(filename, verify=False).content) if is_remote else open(
-            filename, "rb") as f:
+        filename, "rb"
+    ) as f:
 
         # if is_css:
         #     cmd = (
@@ -50,14 +59,27 @@ def validate(filename, verbose=False):
         #         % (quoted_filename, CSS_VALIDATOR_URL))
         #     _ = cmd
         # else:
+        # (content, header) = encode_multipart_formdata(
+        #     [("out", "json"), ("showsource", "yes"), ("content", f.read())]
+        # )
+
         resp = requests.post(
             HTML_VALIDATOR_URL,
+            headers={
+                # "Content-Type": header,
+                "User-Agent": "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                # "Origin": "https://validator.w3.org",
+                # "Alt-Used": "validator.w3.org",
+                # "Referer": "https://validator.w3.org/nu/about.html",
+            },
+            # data=content,
             files={"file": (filename, f, "text/html")},
             data={
                 "out": "json",
                 "showsource": "yes",
             },
-            verify=False)
+            verify=False,
+        )
 
     return resp.json()
 
@@ -70,16 +92,11 @@ def main():
         prog="w3c_validator",
     )
     parser.add_argument(
-        "--log",
-        default="INFO",
-        help=("log level: DEBUG, INFO or INFO "
-              "(default: INFO)"))
-    parser.add_argument(
-        "--version", action="version", version="%(prog)s " + __version__)
-    parser.add_argument(
-        "--verbose", help="increase output verbosity", action="store_true")
-    parser.add_argument(
-        "source", metavar="F", type=str, nargs="+", help="file or URL")
+        "--log", default="INFO", help=("log level: DEBUG, INFO or INFO " "(default: INFO)")
+    )
+    parser.add_argument("--version", action="version", version="%(prog)s " + __version__)
+    parser.add_argument("--verbose", help="increase output verbosity", action="store_true")
+    parser.add_argument("source", metavar="F", type=str, nargs="+", help="file or URL")
     args = parser.parse_args()
 
     logging.basicConfig(level=getattr(logging, args.log))
